@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Peoria, IL Weather</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #e3e8f7, #6ac7ff);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .weather-card {
+    background: rgba(255, 255, 255, 0.9);
+    width: 330px;
+    padding: 22px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #222;
+  }
+
+  .icon {
+    font-size: 60px;
+    margin-top: 10px;
+  }
+
+  .temp {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #111;
+    margin-top: 10px;
+  }
+
+  .desc {
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    color: #333;
+  }
+
+  .details {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 22px;
+  }
+
+  button {
+    margin-top: 18px;
+    padding: 10px 15px;
+    background: #1976d2;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #125a9c;
+  }
+</style>
+</head>
+<body>
+
+<div class="weather-card">
+  <h1>Peoria, IL</h1>
+
+  <div class="icon" id="icon">⛅</div>
+  <div class="temp" id="temp">--°F</div>
+  <div class="desc" id="desc">Loading...</div>
+
+  <div class="details">
+    Humidity: <span id="humidity">--</span>%<br>
+    Wind: <span id="wind">--</span> mph
+  </div>
+
+  <button onclick="loadWeather()">Refresh</button>
+</div>
+
+<script>
+  function loadWeather() {
+    // Free API from wttr.in (no key needed)
+    fetch("https://wttr.in/Peoria?format=j1")
+      .then(res => res.json())
+      .then(data => {
+        
+        // Extract weather info
+        const current = data.current_condition[0];
+        const temp = current.temp_F;
+        const desc = current.weatherDesc[0].value;
+        const humidity = current.humidity;
+        const wind = current.windspeedMiles;
+
+        // Weather icon
+        const iconMap = {
+          "Sunny": "☀️",
+          "Clear": "🌕",
+          "Partly cloudy": "⛅",
+          "Cloudy": "☁️",
+          "Overcast": "☁️",
+          "Mist": "🌫️",
+          "Patchy rain possible": "🌦️",
+          "Light rain": "🌧️",
+          "Moderate rain": "🌧️",
+          "Heavy rain": "🌧️",
+          "Snow": "❄️",
+          "Light snow": "🌨️",
+          "Moderate snow": "🌨️",
+          "Heavy snow": "❄️",
+          "Thunderstorm": "⛈️"
+        };
+
+        const weatherIcon = iconMap[desc] || "🌡️";
+
+        // Display values
+        document.getElementById("icon").textContent = weatherIcon;
+        document.getElementById("temp").textContent = temp + "°F";
+        document.getElementById("desc").textContent = desc;
+        document.getElementById("humidity").textContent = humidity;
+        document.getElementById("wind").textContent = wind;
+
+      })
+      .catch(err => {
+        document.getElementById("desc").textContent = "Error loading weather.";
+      });
+  }
+
+  // Load immediately on page open
+  loadWeather();
+</script>
+
+</body>
+</html>
